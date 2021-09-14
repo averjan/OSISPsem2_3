@@ -9,7 +9,7 @@
 
 void InjectDll(DWORD pid, std::string path);
 DWORD GetProcessIdByName(std::string procName);
-void LibraryLoadThread(loadLibraryInfo info);
+// void LibraryLoadThread(loadLibraryInfo info);
 
 typedef struct
 {
@@ -85,11 +85,22 @@ void InjectDll(DWORD pid, std::string path)
         return;
     }
 
+    /*
     loadLibraryInfo* info;
     (*info).pid = pid;
     (*info).srcString = "Hello, world";
     (*info).resString = "dlrow ,olleH";
-    hThread = CreateRemoteThread(hProc, NULL, 0, (PTHREAD_START_ROUTINE)LibraryLoadThread, (LPVOID)info, 0, NULL);
+    */
+    PTHREAD_START_ROUTINE pfnThreadRtn = (PTHREAD_START_ROUTINE)
+        GetProcAddress(GetModuleHandle(TEXT("Kernel32")), "LoadLibraryA");
+    if (pfnThreadRtn == NULL)
+    {
+        VirtualFreeEx(hProc, (LPVOID)virtPath, 0, MEM_RELEASE);
+        CloseHandle(hProc);
+        return;
+    };
+
+    hThread = CreateRemoteThread(hProc, NULL, 0, (PTHREAD_START_ROUTINE)pfnThreadRtn, (LPVOID)virtPath, 0, NULL);
     if (hThread == NULL)
     {
         VirtualFreeEx(hProc, (LPVOID)virtPath, 0, MEM_RELEASE);
