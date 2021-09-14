@@ -140,7 +140,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="lab3.cpp" />
+    <ClCompile Include="Prog1StaticImport.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ReplaceLib\ReplaceLib.vcxproj">
