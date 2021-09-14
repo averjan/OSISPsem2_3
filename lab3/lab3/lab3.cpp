@@ -1,20 +1,45 @@
-﻿// lab3.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
-//
+﻿#include <iostream>
+#include <Windows.h>
 
-#include <iostream>
+__declspec(dllimport) void __cdecl ReplaceString(
+	DWORD pid,
+	const char* srcString,
+	const char* resString);
+
+typedef void __cdecl ReplaceFunction(DWORD pid, const char* srcString, const char* resString);
+void ReplaceStringDynamic(DWORD pid, const char* srcString, const char* resString);
+void DllInjection(DWORD pid, const char* srcString, const char* resString);
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    DWORD pid = GetCurrentProcessId();
+
+    const char src_str[] = "Hello, world";
+    const char res_str[] = "dlrow ,olleH";
+
+	// ReplaceString(pid, src_str, res_str);
+	// ReplaceStringDynamic(pid, src_str, res_str);
+	printf("%li\n", pid);
+	getchar();
+	printf("%s", src_str);
+	getchar();
 }
 
-// Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
-// Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
+void ReplaceStringDynamic(DWORD pid, const char* srcString, const char* resString)
+{
+	HMODULE hDll = LoadLibrary(L"ReplaceLib.dll");
+	if (hDll != NULL)
+	{
+		ReplaceFunction* replaceFunction = (ReplaceFunction*)GetProcAddress(hDll, "ReplaceString");
+		if (replaceFunction != NULL)
+		{
+			replaceFunction(pid, srcString, resString);
+		}
+		else
+		{
+			std::cout << GetLastError();
+		}
 
-// Советы по началу работы 
-//   1. В окне обозревателя решений можно добавлять файлы и управлять ими.
-//   2. В окне Team Explorer можно подключиться к системе управления версиями.
-//   3. В окне "Выходные данные" можно просматривать выходные данные сборки и другие сообщения.
-//   4. В окне "Список ошибок" можно просматривать ошибки.
-//   5. Последовательно выберите пункты меню "Проект" > "Добавить новый элемент", чтобы создать файлы кода, или "Проект" > "Добавить существующий элемент", чтобы добавить в проект существующие файлы кода.
-//   6. Чтобы снова открыть этот проект позже, выберите пункты меню "Файл" > "Открыть" > "Проект" и выберите SLN-файл.
+		FreeLibrary(hDll);
+	}
+}
