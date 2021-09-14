@@ -15,7 +15,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     {
     }
     case DLL_THREAD_ATTACH:
-        ConsoleLoad();
+        // ConsoleLoad();
     case DLL_THREAD_DETACH:
     case DLL_PROCESS_DETACH:
         break;
@@ -31,6 +31,6 @@ void ConsoleLoad()
 
     DWORD pid = GetCurrentProcessId();
     printf("%li", pid);
-    ReplaceString(pid, srcString, resString);
+    //ReplaceString(pid, srcString, resString);
 }
 

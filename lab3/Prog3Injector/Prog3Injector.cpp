@@ -14,8 +14,8 @@ DWORD GetProcessIdByName(std::string procName);
 typedef struct
 {
     DWORD pid;
-    std::string srcString;
-    std::string resString;
+    char srcString[20];
+    char resString[20];
 
 } loadLibraryInfo;
 
@@ -110,6 +110,22 @@ void InjectDll(DWORD pid, std::string path)
 
     WaitForSingleObject(hThread, INFINITE);
 
+    loadLibraryInfo info;
+    info.pid = pid;
+    strcpy_s(info.srcString, "Hello, world\0");
+    strcpy_s(info.resString, "dlrow ,olleH\0");
+    int size = sizeof(info);
+    printf("%li\n", info.pid);
+    //size = sizeof(DWORD);
+    loadLibraryInfo* vp2 = (loadLibraryInfo*)VirtualAllocEx(hProc, NULL, size, MEM_COMMIT, PAGE_READWRITE);
+    DWORD b;
+    WriteProcessMemory(hProc, (LPVOID)vp2, &info, size, &b);
+    PTHREAD_START_ROUTINE repFun = (PTHREAD_START_ROUTINE)
+        GetProcAddress(LoadLibraryA("InjectReplaceLib.dll"), "ReplaceString");
+    hThread = CreateRemoteThread(hProc, NULL, 0, (PTHREAD_START_ROUTINE)repFun, (LPVOID)vp2, 0, NULL);
+
+    WaitForSingleObject(hThread, INFINITE);
+
     if (virtPath != NULL)
         VirtualFreeEx(hProc, (LPVOID)virtPath, 0, MEM_RELEASE);
     if (hThread != NULL)
@@ -128,7 +144,7 @@ void LibraryLoadThread(loadLibraryInfo info)
         ReplaceFunction* replaceFunction = (ReplaceFunction*)GetProcAddress(hDll, "ReplaceString");
         if (replaceFunction != NULL)
         {
-            replaceFunction(info.pid, info.srcString.c_str(), info.resString.c_str());
+            replaceFunction(info.pid, info.srcString, info.resString);
         }
         else
         {

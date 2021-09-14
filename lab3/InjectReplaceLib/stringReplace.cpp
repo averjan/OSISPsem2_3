@@ -2,8 +2,13 @@
 #include "stringReplace.h"
 
 
-extern "C" __declspec(dllexport) void __cdecl ReplaceString(DWORD pid, const char* srcString, const char* resString)
+//extern "C" __declspec(dllexport) void __cdecl ReplaceString(DWORD pid, const char* srcString, const char* resString)
+extern "C" __declspec(dllexport) void __cdecl ReplaceString(loadLibraryInfo* info)
 {
+	printf("%li\n", info->pid);
+	DWORD pid = info->pid;
+	const char* srcString = info->srcString;
+	const char* resString = info->resString;
 	HANDLE hProcess = OpenProcess(PROCESS_VM_WRITE | PROCESS_VM_READ | PROCESS_QUERY_INFORMATION, FALSE, pid);
 
 	if (hProcess)
@@ -46,7 +51,7 @@ extern "C" __declspec(dllexport) void __cdecl ReplaceString(DWORD pid, const cha
 					}
 					catch (std::bad_alloc& e)
 					{
-
+						printf("Error\n");
 					}
 				}
 			}
