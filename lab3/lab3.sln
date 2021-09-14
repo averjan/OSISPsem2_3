@@ -3,13 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31229.75
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StaticImportProj", "lab3\lab3.vcxproj", "{D8F6746E-C55C-4FA4-8680-3B6524C6D14C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Prog1StaticImport", "lab3\lab3.vcxproj", "{D8F6746E-C55C-4FA4-8680-3B6524C6D14C}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ReplaceLib", "ReplaceLib\ReplaceLib.vcxproj", "{E2F44BC7-6211-4279-BF48-7E995E594372}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InjectReplaceLib", "InjectReplaceLib\InjectReplaceLib.vcxproj", "{CDA69879-D307-4CC5-B730-7BF1455FAA35}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Prog3Injector", "Prog3Injector\Prog3Injector.vcxproj", "{C4B35298-5A83-48F3-AE42-6227148A6293}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Prog2DynamicImport", "Prog2DynamicImport\Prog2DynamicImport.vcxproj", "{4C17AD96-6629-4B15-BA85-95C86EA2B314}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimpleProcessForInjection", "SimpleProcessForInjection\SimpleProcessForInjection.vcxproj", "{8DBCFBC9-9A29-4E0B-9E67-1117E8E7A29B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +55,22 @@ Global
 		{C4B35298-5A83-48F3-AE42-6227148A6293}.Release|x64.Build.0 = Release|x64
 		{C4B35298-5A83-48F3-AE42-6227148A6293}.Release|x86.ActiveCfg = Release|Win32
 		{C4B35298-5A83-48F3-AE42-6227148A6293}.Release|x86.Build.0 = Release|Win32
+		{4C17AD96-6629-4B15-BA85-95C86EA2B314}.Debug|x64.ActiveCfg = Debug|x64
+		{4C17AD96-6629-4B15-BA85-95C86EA2B314}.Debug|x64.Build.0 = Debug|x64
+		{4C17AD96-6629-4B15-BA85-95C86EA2B314}.Debug|x86.ActiveCfg = Debug|Win32
+		{4C17AD96-6629-4B15-BA85-95C86EA2B314}.Debug|x86.Build.0 = Debug|Win32
+		{4C17AD96-6629-4B15-BA85-95C86EA2B314}.Release|x64.ActiveCfg = Release|x64
+		{4C17AD96-6629-4B15-BA85-95C86EA2B314}.Release|x64.Build.0 = Release|x64
+		{4C17AD96-6629-4B15-BA85-95C86EA2B314}.Release|x86.ActiveCfg = Release|Win32
+		{4C17AD96-6629-4B15-BA85-95C86EA2B314}.Release|x86.Build.0 = Release|Win32
+		{8DBCFBC9-9A29-4E0B-9E67-1117E8E7A29B}.Debug|x64.ActiveCfg = Debug|x64
+		{8DBCFBC9-9A29-4E0B-9E67-1117E8E7A29B}.Debug|x64.Build.0 = Debug|x64
+		{8DBCFBC9-9A29-4E0B-9E67-1117E8E7A29B}.Debug|x86.ActiveCfg = Debug|Win32
+		{8DBCFBC9-9A29-4E0B-9E67-1117E8E7A29B}.Debug|x86.Build.0 = Debug|Win32
+		{8DBCFBC9-9A29-4E0B-9E67-1117E8E7A29B}.Release|x64.ActiveCfg = Release|x64
+		{8DBCFBC9-9A29-4E0B-9E67-1117E8E7A29B}.Release|x64.Build.0 = Release|x64
+		{8DBCFBC9-9A29-4E0B-9E67-1117E8E7A29B}.Release|x86.ActiveCfg = Release|Win32
+		{8DBCFBC9-9A29-4E0B-9E67-1117E8E7A29B}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

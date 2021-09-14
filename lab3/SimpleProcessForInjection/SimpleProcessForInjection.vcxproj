@@ -21,10 +21,9 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{d8f6746e-c55c-4fa4-8680-3b6524c6d14c}</ProjectGuid>
-    <RootNamespace>lab3</RootNamespace>
+    <ProjectGuid>{8dbcfbc9-9a29-4e0b-9e67-1117e8e7a29b}</ProjectGuid>
+    <RootNamespace>SimpleProcessForInjection</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>Prog1StaticImport</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -140,12 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="lab3.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ReplaceLib\ReplaceLib.vcxproj">
-      <Project>{e2f44bc7-6211-4279-bf48-7e995e594372}</Project>
-    </ProjectReference>
+    <ClCompile Include="SimpleProcessForInjection.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

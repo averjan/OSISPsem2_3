@@ -7,9 +7,8 @@
 #include <TlHelp32.h>
 #include <tchar.h>
 
-void InjectDll(DWORD pid, std::string path);
+void InjectDll(DWORD pid, std::string path, const char* srcString, const char* resString);
 DWORD GetProcessIdByName(std::string procName);
-// void LibraryLoadThread(loadLibraryInfo info);
 
 typedef struct
 {
@@ -25,8 +24,10 @@ int main()
     std::cout << "ProgName: ";
     std::cin >> progName;
     DWORD pid = GetProcessIdByName(progName);
-    InjectDll(pid, "InjectReplaceLib.dll");
-    getchar();
+    const char* srcString = "Hello, world";
+    const char* resString = "dlrow ,olleH";
+    InjectDll(pid, "InjectReplaceLib.dll", srcString, resString);
+    std::cin.get();
 }
 
 DWORD GetProcessIdByName(std::string procName)
@@ -46,19 +47,12 @@ DWORD GetProcessIdByName(std::string procName)
 
                 CloseHandle(snapshot);
                 return entry.th32ProcessID;
-                /*
-                HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, entry.th32ProcessID);
-
-                // Do stuff..
-
-                CloseHandle(hProcess);
-                */
             }
         }
     }
 }
 
-void InjectDll(DWORD pid, std::string path)
+void InjectDll(DWORD pid, std::string path, const char* srcString, const char* resString)
 {
     HANDLE hProc, hThread;
     PCSTR virtPath;
@@ -85,12 +79,6 @@ void InjectDll(DWORD pid, std::string path)
         return;
     }
 
-    /*
-    loadLibraryInfo* info;
-    (*info).pid = pid;
-    (*info).srcString = "Hello, world";
-    (*info).resString = "dlrow ,olleH";
-    */
     PTHREAD_START_ROUTINE pfnThreadRtn = (PTHREAD_START_ROUTINE)
         GetProcAddress(GetModuleHandle(TEXT("Kernel32")), "LoadLibraryA");
     if (pfnThreadRtn == NULL)
@@ -112,11 +100,9 @@ void InjectDll(DWORD pid, std::string path)
 
     loadLibraryInfo info;
     info.pid = pid;
-    strcpy_s(info.srcString, "Hello, world\0");
-    strcpy_s(info.resString, "dlrow ,olleH\0");
+    strcpy_s(info.srcString, srcString);
+    strcpy_s(info.resString, resString);
     int size = sizeof(info);
-    printf("%li\n", info.pid);
-    //size = sizeof(DWORD);
     loadLibraryInfo* vp2 = (loadLibraryInfo*)VirtualAllocEx(hProc, NULL, size, MEM_COMMIT, PAGE_READWRITE);
     DWORD b;
     WriteProcessMemory(hProc, (LPVOID)vp2, &info, size, &b);
@@ -132,25 +118,4 @@ void InjectDll(DWORD pid, std::string path)
         CloseHandle(hThread);
     if (hProc != NULL)
         CloseHandle(hProc);
-}
-
-
-typedef void __cdecl ReplaceFunction(DWORD pid, const char* srcString, const char* resString);
-void LibraryLoadThread(loadLibraryInfo info)
-{
-    HMODULE hDll = LoadLibrary(L"ReplaceLib.dll");
-    if (hDll != NULL)
-    {
-        ReplaceFunction* replaceFunction = (ReplaceFunction*)GetProcAddress(hDll, "ReplaceString");
-        if (replaceFunction != NULL)
-        {
-            replaceFunction(info.pid, info.srcString, info.resString);
-        }
-        else
-        {
-            std::cout << GetLastError();
-        }
-
-        FreeLibrary(hDll);
-    }
 }

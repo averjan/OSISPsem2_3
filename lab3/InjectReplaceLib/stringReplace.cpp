@@ -2,7 +2,6 @@
 #include "stringReplace.h"
 
 
-//extern "C" __declspec(dllexport) void __cdecl ReplaceString(DWORD pid, const char* srcString, const char* resString)
 extern "C" __declspec(dllexport) void __cdecl ReplaceString(loadLibraryInfo* info)
 {
 	printf("%li\n", info->pid);
