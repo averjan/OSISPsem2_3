@@ -1,14 +1,13 @@
-﻿// Prog3Injector.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
-//
-
-#include <iostream>
+﻿#include <iostream>
 #include <windows.h>
 #include <string>
 #include <TlHelp32.h>
 #include <tchar.h>
 
-void InjectDll(DWORD pid, std::string path, const char* srcString, const char* resString);
+void InjectDll(DWORD pid, LPCVOID param, DWORD paramSize, const char* libName, const char* functionName);
 DWORD GetProcessIdByName(std::string procName);
+void LoadLibToThread(DWORD targetProcess, const char* loadingLibName);
+void CallReplaceString(DWORD targetProcess, const char* srcString, const char* resString);
 
 typedef struct
 {
@@ -25,9 +24,26 @@ int main()
     std::cin >> progName;
     DWORD pid = GetProcessIdByName(progName);
     const char* srcString = "Hello, world";
-    const char* resString = "dlrow ,olleH";
-    InjectDll(pid, "InjectReplaceLib.dll", srcString, resString);
+    const char* resString = "Foo";
+    LoadLibToThread(pid, "InjectReplaceLib.dll");
+    CallReplaceString(pid, srcString, resString);
     std::cin.get();
+}
+
+void LoadLibToThread(DWORD targetProcess, const char* loadingLibName)
+{
+    int paramLength = strlen(loadingLibName) + 1;
+    int paramSize = paramLength * sizeof(CHAR);
+    InjectDll(targetProcess, loadingLibName, paramSize, "Kernel32.dll", "LoadLibraryA");
+}
+
+void CallReplaceString(DWORD targetProcess, const char* srcString, const char* resString)
+{
+    loadLibraryInfo info;
+    info.pid = targetProcess;
+    strcpy_s(info.srcString, srcString);
+    strcpy_s(info.resString, resString);
+    InjectDll(targetProcess, &info, sizeof(info), "InjectReplaceLib.dll", "ReplaceString");
 }
 
 DWORD GetProcessIdByName(std::string procName)
@@ -52,7 +68,7 @@ DWORD GetProcessIdByName(std::string procName)
     }
 }
 
-void InjectDll(DWORD pid, std::string path, const char* srcString, const char* resString)
+void InjectDll(DWORD pid, LPCVOID param, DWORD paramSize, const char* libName, const char* functionName)
 {
     HANDLE hProc, hThread;
     PCSTR virtPath;
@@ -63,16 +79,14 @@ void InjectDll(DWORD pid, std::string path, const char* srcString, const char* r
         return;
     }
 
-    int pathParamLength = 1 + path.size();
-    int pathParamSize = pathParamLength * sizeof(CHAR);
-    virtPath = (PCSTR)VirtualAllocEx(hProc, NULL, pathParamSize, MEM_COMMIT, PAGE_READWRITE);
+    virtPath = (PCSTR)VirtualAllocEx(hProc, NULL, paramSize, MEM_COMMIT, PAGE_READWRITE);
     if (virtPath == NULL)
     {
         CloseHandle(hProc);
         return;
     }
 
-    if (!WriteProcessMemory(hProc, (LPVOID)virtPath, path.c_str(), pathParamSize, NULL))
+    if (!WriteProcessMemory(hProc, (LPVOID)virtPath, param, paramSize, NULL))
     {
         VirtualFreeEx(hProc, (LPVOID)virtPath, 0, MEM_RELEASE);
         CloseHandle(hProc);
@@ -80,7 +94,7 @@ void InjectDll(DWORD pid, std::string path, const char* srcString, const char* r
     }
 
     PTHREAD_START_ROUTINE pfnThreadRtn = (PTHREAD_START_ROUTINE)
-        GetProcAddress(GetModuleHandle(TEXT("Kernel32")), "LoadLibraryA");
+        GetProcAddress(LoadLibraryA(libName), functionName);
     if (pfnThreadRtn == NULL)
     {
         VirtualFreeEx(hProc, (LPVOID)virtPath, 0, MEM_RELEASE);
@@ -95,20 +109,6 @@ void InjectDll(DWORD pid, std::string path, const char* srcString, const char* r
         CloseHandle(hProc);
         return;
     }
-
-    WaitForSingleObject(hThread, INFINITE);
-
-    loadLibraryInfo info;
-    info.pid = pid;
-    strcpy_s(info.srcString, srcString);
-    strcpy_s(info.resString, resString);
-    int size = sizeof(info);
-    loadLibraryInfo* vp2 = (loadLibraryInfo*)VirtualAllocEx(hProc, NULL, size, MEM_COMMIT, PAGE_READWRITE);
-    DWORD b;
-    WriteProcessMemory(hProc, (LPVOID)vp2, &info, size, &b);
-    PTHREAD_START_ROUTINE repFun = (PTHREAD_START_ROUTINE)
-        GetProcAddress(LoadLibraryA("InjectReplaceLib.dll"), "ReplaceString");
-    hThread = CreateRemoteThread(hProc, NULL, 0, (PTHREAD_START_ROUTINE)repFun, (LPVOID)vp2, 0, NULL);
 
     WaitForSingleObject(hThread, INFINITE);
 

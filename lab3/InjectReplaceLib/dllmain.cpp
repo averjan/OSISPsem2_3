@@ -1,8 +1,5 @@
-﻿// dllmain.cpp : Определяет точку входа для приложения DLL.
-#include "pch.h"
+﻿#include "pch.h"
 #include "stringReplace.h"
-
-void ConsoleLoad();
 
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
@@ -15,22 +12,10 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     {
     }
     case DLL_THREAD_ATTACH:
-        // ConsoleLoad();
     case DLL_THREAD_DETACH:
     case DLL_PROCESS_DETACH:
         break;
     }
     return TRUE;
-}
-
-
-void ConsoleLoad()
-{
-    const char* srcString = "Hello, world";
-    const char* resString = "dlrow ,olleH";
-
-    DWORD pid = GetCurrentProcessId();
-    printf("%li", pid);
-    //ReplaceString(pid, srcString, resString);
 }
 

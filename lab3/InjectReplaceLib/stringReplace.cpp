@@ -4,7 +4,6 @@
 
 extern "C" __declspec(dllexport) void __cdecl ReplaceString(loadLibraryInfo* info)
 {
-	printf("%li\n", info->pid);
 	DWORD pid = info->pid;
 	const char* srcString = info->srcString;
 	const char* resString = info->resString;
@@ -50,7 +49,6 @@ extern "C" __declspec(dllexport) void __cdecl ReplaceString(loadLibraryInfo* inf
 					}
 					catch (std::bad_alloc& e)
 					{
-						printf("Error\n");
 					}
 				}
 			}

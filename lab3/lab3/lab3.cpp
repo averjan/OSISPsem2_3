@@ -11,7 +11,7 @@ int main()
     DWORD pid = GetCurrentProcessId();
 
     const char srcString[] = "Hello, world";
-    const char resString[] = "dlrow ,olleH";
+    const char resString[] = "Foo";
 
 	ReplaceString(pid, srcString, resString);
 

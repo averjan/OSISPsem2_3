@@ -4,7 +4,6 @@
 #include <Windows.h>
 #include <string>
 
-// extern "C" __declspec(dllexport) void __cdecl ReplaceString(DWORD pid, const char* srcString, const char* resString);
 typedef struct
 {
     DWORD pid;
